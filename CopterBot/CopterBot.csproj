@@ -30,8 +30,8 @@
   </PropertyGroup>
   <Import Project="$(NetMfTargetsBaseDir)$(TargetFrameworkVersion)\CSharp.Targets" />
   <ItemGroup>
-    <Compile Include="Sensors\Barometer.cs" />
-    <Compile Include="Sensors\BarometerCalibrationData.cs" />
+    <Compile Include="Sensors\Barometers\Barometer.cs" />
+    <Compile Include="Sensors\Barometers\BarometerCalibrationData.cs" />
     <Compile Include="Sensors\Common\ByteCombiner.cs" />
     <Compile Include="Sensors\Common\Oversampling.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -41,9 +41,12 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Sensors\Compass.cs" />
-    <Compile Include="Sensors\CompassDirections.cs" />
+    <Compile Include="Sensors\Magnetometers\Compass.cs" />
+    <Compile Include="Sensors\Magnetometers\CompassDirections.cs" />
     <Compile Include="Sensors\Common\Gain.cs" />
+    <Compile Include="Visualization\Lcd.cs" />
+    <Compile Include="Visualization\LcdCommand.cs" />
+    <Compile Include="Visualization\LcdBus.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="FEZDomino_GHIElectronics.NETMF.FEZ, Version=4.1.1.0, Culture=neutral, processorArchitecture=MSIL">

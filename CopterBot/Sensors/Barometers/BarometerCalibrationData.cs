@@ -1,7 +1,7 @@
 using System;
 using CopterBot.Sensors.Common;
 
-namespace CopterBot.Sensors
+namespace CopterBot.Sensors.Barometers
 {
     public class BarometerCalibrationData
     {

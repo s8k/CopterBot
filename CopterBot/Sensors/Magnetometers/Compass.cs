@@ -3,10 +3,11 @@ using System.Threading;
 using CopterBot.Sensors.Common;
 using Microsoft.SPOT.Hardware;
 
-namespace CopterBot.Sensors
+namespace CopterBot.Sensors.Magnetometers
 {
     /// <summary>
     /// HMC5883L - 3-Axis Digital Compass
+    /// Specification: http://dl.dropbox.com/u/4052063/specs/HMC5883L.pdf
     /// </summary>
     public class Compass : IDisposable
     {

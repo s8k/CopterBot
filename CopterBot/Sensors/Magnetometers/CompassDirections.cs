@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CopterBot.Sensors
+namespace CopterBot.Sensors.Magnetometers
 {
     public class CompassDirections
     {

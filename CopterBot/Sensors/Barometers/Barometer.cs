@@ -3,10 +3,11 @@ using System.Threading;
 using CopterBot.Sensors.Common;
 using Microsoft.SPOT.Hardware;
 
-namespace CopterBot.Sensors
+namespace CopterBot.Sensors.Barometers
 {
     /// <summary>
     /// BMP085 - Digital Pressure Sensor
+    /// Specification: http://dl.dropbox.com/u/4052063/specs/BMP085.pdf
     /// </summary>
     public class Barometer : IDisposable
     {
