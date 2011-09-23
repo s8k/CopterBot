@@ -12,27 +12,19 @@ namespace CopterBot
     {
         public static void Main()
         {
-            var lcdPorts = new LcdBus(
-                (Cpu.Pin)FEZ_Pin.Digital.Di13,
-                (Cpu.Pin)FEZ_Pin.Digital.Di11,
-                (Cpu.Pin)FEZ_Pin.Digital.Di10,
-                (Cpu.Pin)FEZ_Pin.Digital.Di9,
-                (Cpu.Pin)FEZ_Pin.Digital.Di8,
-                (Cpu.Pin)FEZ_Pin.Digital.Di7);
-
-            using (var display = new Lcd(lcdPorts))
+            using (var display = new Lcd(GetLcdBusConfiguration()))
             {
                 display.Init();
-                display.Show("1All your base  are belong to us");
-                display.Show1Line("first line");
-                display.Show2Line("second line");
+                display.Print("All your base   are belong to us");
+                display.Print1Line("first line");
+                display.Print2Line("second line");
 //                using (var barometer = new Barometer())
 //                {
 //                    barometer.Init();
 //
-//                    display.Show(string.Concat("Temperature: ", barometer.GetTemperature().ToString("F1"), " *C"));
-//                    display.Show(string.Concat("Pressure: ", barometer.GetPressure(), " Pa"));
-//                    display.Show(string.Concat("Altitude: ", barometer.GetAltitude().ToString("F2"), " m"));
+//                    display.Print(string.Concat("Temperature: ", barometer.GetTemperature().ToString("F1"), " *C"));
+//                    display.Print(string.Concat("Pressure: ", barometer.GetPressure(), " Pa"));
+//                    display.Print(string.Concat("Altitude: ", barometer.GetAltitude().ToString("F2"), " m"));
 //                }
 
 //                using (var compass = new Compass())
@@ -41,9 +33,22 @@ namespace CopterBot
 //
 //                    var directions = compass.GetDirections();
 //
-//                    display.Show(string.Concat("X: ", directions.X, " Y: ", directions.Y, " Z: ", directions.Z));
+//                    display.Print(string.Concat("X: ", directions.X, " Y: ", directions.Y, " Z: ", directions.Z));
 //                }
             }
+        }
+
+        private static ILcdBusConfiguration GetLcdBusConfiguration()
+        {
+            return new LcdBusConfiguration
+                       {
+                           RegisterSelectPin = (Cpu.Pin)FEZ_Pin.Digital.Di13,
+                           EnablePin = (Cpu.Pin)FEZ_Pin.Digital.Di11,
+                           DataBit0Pin = (Cpu.Pin)FEZ_Pin.Digital.Di10,
+                           DataBit1Pin = (Cpu.Pin)FEZ_Pin.Digital.Di9,
+                           DataBit2Pin = (Cpu.Pin)FEZ_Pin.Digital.Di8,
+                           DataBit3Pin = (Cpu.Pin)FEZ_Pin.Digital.Di7
+                       };
         }
     }
 }

@@ -7,18 +7,19 @@ namespace CopterBot.Visualization
     /// SPLC780C - 16x2 dot-matrix LCD controller
     /// Specification: http://dl.dropbox.com/u/4052063/specs/SPLC780C.pdf
     /// </summary>
-    public class Lcd : IDisposable
+    public class Lcd : ILcd
     {
         private const int LineLength = 16;
         private readonly LcdBus bus;
 
-        public Lcd(LcdBus bus)
+        public Lcd(ILcdBusConfiguration configuration)
         {
-            this.bus = bus;
+            bus = new LcdBus(configuration);
         }
 
         public void Dispose()
         {
+            //SendCommand(LcdCommand.TurnOffDisplay);
             bus.Dispose();
         }
 
@@ -32,16 +33,16 @@ namespace CopterBot.Visualization
             }
 
             SendCommand(LcdCommand.Enable4BitInterface);
-            SendCommand(LcdCommand.SetTwoLinesMode);
             SendCommand(LcdCommand.CleanScreen);
-            SendCommand(LcdCommand.TurnOnDisplay);
-            SendCommand(LcdCommand.SetDisplayShift);
             SendCommand(LcdCommand.ReturnCursorHome);
+            SendCommand(LcdCommand.SetTwoLinesMode);
+            SendCommand(LcdCommand.SetDisplayShift);
+            SendCommand(LcdCommand.TurnOnDisplay);
         }
 
-        public void Show(string text)
+        public void Print(string text)
         {
-            Show1Line(text);
+            Print1Line(text);
 
             if (text.Length > LineLength)
             {
@@ -50,14 +51,14 @@ namespace CopterBot.Visualization
             }
         }
 
-        public void Show1Line(string text)
+        public void Print1Line(string text)
         {
             CheckArgument(text);
             SendCommand(LcdCommand.ReturnCursorHome);
             SendLine(text);
         }
 
-        public void Show2Line(string text)
+        public void Print2Line(string text)
         {
             CheckArgument(text);
             SendCommand(LcdCommand.CursorToSecondLine);

@@ -1,18 +1,17 @@
-using System;
 using Microsoft.SPOT.Hardware;
 
 namespace CopterBot.Visualization
 {
-    public class LcdBus : IDisposable
+    public class LcdBus
     {
-        public LcdBus(Cpu.Pin registerSelect, Cpu.Pin enable, Cpu.Pin dataBit0, Cpu.Pin dataBit1, Cpu.Pin dataBit2, Cpu.Pin dataBit3)
+        public LcdBus(ILcdBusConfiguration configuration)
         {
-            RegisterSelect = new OutputPort(registerSelect, false);
-            Enable = new OutputPort(enable, false);
-            DataBit0 = new OutputPort(dataBit0, false);
-            DataBit1 = new OutputPort(dataBit1, false);
-            DataBit2 = new OutputPort(dataBit2, false);
-            DataBit3 = new OutputPort(dataBit3, false);
+            RegisterSelect = new OutputPort(configuration.RegisterSelectPin, false);
+            Enable = new OutputPort(configuration.EnablePin, false);
+            DataBit0 = new OutputPort(configuration.DataBit0Pin, false);
+            DataBit1 = new OutputPort(configuration.DataBit1Pin, false);
+            DataBit2 = new OutputPort(configuration.DataBit2Pin, false);
+            DataBit3 = new OutputPort(configuration.DataBit3Pin, false);
         }
 
         public void Dispose()

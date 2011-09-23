@@ -28,6 +28,8 @@ namespace CopterBot.Visualization
         /// </summary>
         public const string TurnOnDisplay = "00001101";
 
+        public const string TurnOffDisplay = "00001000";
+
         /// <summary>
         /// 0  0  0  0  0  1  ID  S
         /// 
