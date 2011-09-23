@@ -1,0 +1,10 @@
+*.suo
+*.user
+*.dll
+*.exe
+*.pdb
+_ReSharper.*
+
+*.pe
+*.pdbx
+*.cache
