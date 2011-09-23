@@ -42,12 +42,12 @@ namespace CopterBot
         {
             return new LcdBusConfiguration
                        {
-                           RegisterSelectPin = (Cpu.Pin)FEZ_Pin.Digital.Di13,
-                           EnablePin = (Cpu.Pin)FEZ_Pin.Digital.Di11,
-                           DataBit0Pin = (Cpu.Pin)FEZ_Pin.Digital.Di10,
-                           DataBit1Pin = (Cpu.Pin)FEZ_Pin.Digital.Di9,
-                           DataBit2Pin = (Cpu.Pin)FEZ_Pin.Digital.Di8,
-                           DataBit3Pin = (Cpu.Pin)FEZ_Pin.Digital.Di7
+                           Pin4 = (Cpu.Pin)FEZ_Pin.Digital.Di13,
+                           Pin6 = (Cpu.Pin)FEZ_Pin.Digital.Di11,
+                           Pin11 = (Cpu.Pin)FEZ_Pin.Digital.Di10,
+                           Pin12 = (Cpu.Pin)FEZ_Pin.Digital.Di9,
+                           Pin13 = (Cpu.Pin)FEZ_Pin.Digital.Di8,
+                           Pin14 = (Cpu.Pin)FEZ_Pin.Digital.Di7
                        };
         }
     }

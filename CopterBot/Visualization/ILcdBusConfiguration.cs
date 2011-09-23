@@ -4,16 +4,16 @@ namespace CopterBot.Visualization
 {
     public interface ILcdBusConfiguration
     {
-        Cpu.Pin RegisterSelectPin { get; }
+        Cpu.Pin Pin4 { get; }
 
-        Cpu.Pin EnablePin { get; }
+        Cpu.Pin Pin6 { get; }
 
-        Cpu.Pin DataBit0Pin { get; }
+        Cpu.Pin Pin11 { get; }
 
-        Cpu.Pin DataBit1Pin { get; }
+        Cpu.Pin Pin12 { get; }
 
-        Cpu.Pin DataBit2Pin { get; }
+        Cpu.Pin Pin13 { get; }
 
-        Cpu.Pin DataBit3Pin { get; }
+        Cpu.Pin Pin14 { get; }
     }
 }

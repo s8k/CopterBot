@@ -6,12 +6,12 @@ namespace CopterBot.Visualization
     {
         public LcdBus(ILcdBusConfiguration configuration)
         {
-            RegisterSelect = new OutputPort(configuration.RegisterSelectPin, false);
-            Enable = new OutputPort(configuration.EnablePin, false);
-            DataBit0 = new OutputPort(configuration.DataBit0Pin, false);
-            DataBit1 = new OutputPort(configuration.DataBit1Pin, false);
-            DataBit2 = new OutputPort(configuration.DataBit2Pin, false);
-            DataBit3 = new OutputPort(configuration.DataBit3Pin, false);
+            RegisterSelect = new OutputPort(configuration.Pin4, false);
+            Enable = new OutputPort(configuration.Pin6, false);
+            DataBit0 = new OutputPort(configuration.Pin11, false);
+            DataBit1 = new OutputPort(configuration.Pin12, false);
+            DataBit2 = new OutputPort(configuration.Pin13, false);
+            DataBit3 = new OutputPort(configuration.Pin14, false);
         }
 
         public void Dispose()
