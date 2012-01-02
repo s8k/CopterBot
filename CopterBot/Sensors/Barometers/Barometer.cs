@@ -6,7 +6,7 @@ using Microsoft.SPOT.Hardware;
 namespace CopterBot.Sensors.Barometers
 {
     /// <summary>
-    /// BMP085 - Digital Pressure Sensor
+    /// BMP085 - Digital pressure sensor
     /// Specification: http://dl.dropbox.com/u/4052063/specs/BMP085.pdf
     /// </summary>
     public class Barometer : IDisposable
@@ -17,7 +17,7 @@ namespace CopterBot.Sensors.Barometers
         private const float SeaLevelPressure = 101325;
 
         private readonly I2CDevice device = new I2CDevice(new I2CDevice.Configuration(Address, ClockRate));
-        private readonly BarometerCalibrationData coefficients = new BarometerCalibrationData();
+        private BarometerCalibrationData coefficients;
 
         private byte oversampling;
 
@@ -40,7 +40,7 @@ namespace CopterBot.Sensors.Barometers
                                },
                            Timeout);
 
-            coefficients.Init(readBuffer);
+            coefficients = new BarometerCalibrationData(readBuffer);
         }
 
         public float GetTemperature()
@@ -82,7 +82,7 @@ namespace CopterBot.Sensors.Barometers
                                },
                            Timeout);
 
-            return ByteCombiner.TwoBytes(readBuffer);
+            return ByteCombiner.TwoMsbFirst(readBuffer);
         }
 
         private Int32 ReadUncompensatedPressure()
@@ -106,7 +106,7 @@ namespace CopterBot.Sensors.Barometers
                                },
                            Timeout);
 
-            return ByteCombiner.ThreeBytes(readBuffer) >> (8 - oversampling);
+            return ByteCombiner.ThreeMsbFirst(readBuffer) >> (8 - oversampling);
         }
 
         private Int32 GetTemperatureCoefficient(Int32 uncompensatedTemperature)

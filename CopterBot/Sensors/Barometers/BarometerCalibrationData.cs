@@ -7,11 +7,11 @@ namespace CopterBot.Sensors.Barometers
     {
         private readonly Int16[] coefficients = new Int16[11];
 
-        public void Init(byte[] data)
+        public BarometerCalibrationData(byte[] data)
         {
             for (byte i = 0; i < coefficients.Length; i++)
             {
-                coefficients[i] = ByteCombiner.TwoBytes(data, i * 2);
+                coefficients[i] = ByteCombiner.TwoMsbFirst(data, i * 2);
             }
         }
 

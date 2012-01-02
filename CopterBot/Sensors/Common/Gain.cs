@@ -1,6 +1,6 @@
 ﻿namespace CopterBot.Sensors.Common
 {
-    public enum Gain
+    public enum Gain : byte
     {
         None = 7,
         Level1 = 6,

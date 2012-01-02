@@ -6,7 +6,7 @@ using Microsoft.SPOT.Hardware;
 namespace CopterBot.Sensors.Magnetometers
 {
     /// <summary>
-    /// HMC5883L - 3-Axis Digital Compass
+    /// HMC5883L - Digital triaxial compass
     /// Specification: http://dl.dropbox.com/u/4052063/specs/HMC5883L.pdf
     /// </summary>
     public class Compass : IDisposable
@@ -43,9 +43,9 @@ namespace CopterBot.Sensors.Magnetometers
 
             return new CompassDirections
                        {
-                           X = ByteCombiner.TwoBytes(directions),
-                           Y = ByteCombiner.TwoBytes(directions, 4),
-                           Z = ByteCombiner.TwoBytes(directions, 2)
+                           X = ByteCombiner.TwoMsbFirst(directions),
+                           Y = ByteCombiner.TwoMsbFirst(directions, 4),
+                           Z = ByteCombiner.TwoMsbFirst(directions, 2)
                        };
         }
 

@@ -2,26 +2,34 @@ using System;
 
 namespace CopterBot.Sensors.Common
 {
-    public class ByteCombiner
+    public static class ByteCombiner
     {
-        public static Int16 TwoBytes(byte[] array, int skip = 0)
+        public static short TwoLsbFirst(byte[] array, int skip = 0)
         {
-            return (Int16)Combine(2, array, skip);
+            return (short)Combine(2, true, array, skip);
+        }
+        public static short TwoMsbFirst(byte[] array, int skip = 0)
+        {
+            return (short)Combine(2, false, array, skip);
         }
 
-        public static Int32 ThreeBytes(byte[] array, int skip = 0)
+        public static int ThreeMsbFirst(byte[] array, int skip = 0)
         {
-            return Combine(3, array, skip);
+            return Combine(3, false, array, skip);
         }
 
-        private static Int32 Combine(int count, byte[] array, int skip)
+        private static int Combine(int count, bool fromLsb, byte[] array, int skip)
         {
             CheckArraySize(count, array, skip);
 
             var result = 0;
             for (var i = 0; i < count; i++)
             {
-                result |= array[skip + i] << (8 * (count - i - 1));
+                var shift = fromLsb
+                                ? i
+                                : count - i - 1;
+
+                result |= array[skip + i] << (8 * shift);
             }
 
             return result;
