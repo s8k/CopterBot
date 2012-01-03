@@ -16,17 +16,17 @@ namespace CopterBot.Sensors.Accelerometers
 
         private readonly I2CDevice device = new I2CDevice(new I2CDevice.Configuration(Address, ClockRate));
 
-        private float scaling;
+        private float scaleRange;
 
         public void Dispose()
         {
             device.Dispose();
         }
 
-        public void Init(ScaleRange scaleRange = ScaleRange.G2, Bandwidth bandwidth = Bandwidth.Hz150)
+        public void Init(ScaleRange scale = ScaleRange.G2, Bandwidth bandwidth = Bandwidth.Hz150)
         {
             EnableSettingsEditing();
-            SetScaleRange((byte)scaleRange);
+            SetScaleRange((byte)scale);
             SetBandwidth((byte)bandwidth);
             BlockMsbWhileLsbIsRead();
         }
@@ -100,7 +100,7 @@ namespace CopterBot.Sensors.Accelerometers
         private void SetScaleRange(byte scaleRange)
         {
             var scaleRangeMap = new[] { 1, 1.5f, 2, 3, 4, 8, 16 };
-            scaling = scaleRangeMap[scaleRange];
+            this.scaleRange = scaleRangeMap[scaleRange];
 
             var registerBuffer = new byte[] { 0x35 };
             var readBuffer = new byte[1];
@@ -202,7 +202,7 @@ namespace CopterBot.Sensors.Accelerometers
                 result = (shifted & 0x1FFF) * -1;
             }
 
-            return result * scaling / 0x1FFF;
+            return result * scaleRange / 0x1FFF;
         }
     }
 }

@@ -14,22 +14,36 @@ namespace CopterBot
     {
         public static void Main()
         {
-            using (var accelerometer = new Accelerometer())
+            using (var compass = new Compass())
             {
-                accelerometer.Init(ScaleRange.G2, Bandwidth.HighPass);
-                
-                for (int i = 0; i < 500; i++)
-                {
-                    var accelerometerDirections = accelerometer.GetDirections();
+                compass.Init(Gain.Max);
 
-                    Debug.Print("X: " + accelerometerDirections.X.ToString("F2"));
-                    Debug.Print("Y: " + accelerometerDirections.Y.ToString("F2"));
-                    Debug.Print("Z: " + accelerometerDirections.Z.ToString("F2"));
-                    Debug.Print("--------------------");
+                for (int i = 0; i < 15; i++)
+                {
+                    var directions = compass.GetDirections();
+
+                    Debug.Print(string.Concat("X: ", directions.X, " Y: ", directions.Y, " Z: ", directions.Z));
 
                     Thread.Sleep(500);
                 }
             }
+
+//            using (var accelerometer = new Accelerometer())
+//            {
+//                accelerometer.Init(ScaleRange.G2, Bandwidth.HighPass);
+//                
+//                for (int i = 0; i < 500; i++)
+//                {
+//                    var accelerometerDirections = accelerometer.GetDirections();
+//
+//                    Debug.Print("X: " + accelerometerDirections.X.ToString("F2"));
+//                    Debug.Print("Y: " + accelerometerDirections.Y.ToString("F2"));
+//                    Debug.Print("Z: " + accelerometerDirections.Z.ToString("F2"));
+//                    Debug.Print("--------------------");
+//
+//                    Thread.Sleep(500);
+//                }
+//            }
 
             using (var display = new Lcd(GetLcdBusConfiguration()))
             {

@@ -17,18 +17,18 @@ namespace CopterBot.Sensors.Barometers
         private const float SeaLevelPressure = 101325;
 
         private readonly I2CDevice device = new I2CDevice(new I2CDevice.Configuration(Address, ClockRate));
+        
         private BarometerCalibrationData coefficients;
-
-        private byte oversampling;
+        private byte powerMode;
 
         public void Dispose()
         {
             device.Dispose();
         }
 
-        public void Init(Oversampling oversamplingLevel = Oversampling.Level1)
+        public void Init(PowerMode power = PowerMode.Standard)
         {
-            oversampling = (byte)oversamplingLevel;
+            powerMode = (byte)power;
 
             var readRegister = new byte[] { 0xAA };
             var readBuffer = new byte[22];
@@ -87,7 +87,7 @@ namespace CopterBot.Sensors.Barometers
 
         private Int32 ReadUncompensatedPressure()
         {
-            var writeRegister = new byte[] { 0xF4, (byte)(oversampling << 6 | 0x34) };
+            var writeRegister = new byte[] { 0xF4, (byte)(powerMode << 6 | 0x34) };
             var readRegister = new byte[] { 0xF6 };
             var readBuffer = new byte[3];
 
@@ -97,7 +97,7 @@ namespace CopterBot.Sensors.Barometers
                                },
                            Timeout);
 
-            Thread.Sleep(GetPressureMeasurementTimeout(oversampling));
+            Thread.Sleep(GetPressureMeasurementTimeout(powerMode));
 
             device.Execute(new I2CDevice.I2CTransaction[]
                                {
@@ -106,7 +106,7 @@ namespace CopterBot.Sensors.Barometers
                                },
                            Timeout);
 
-            return ByteCombiner.ThreeMsbFirst(readBuffer) >> (8 - oversampling);
+            return ByteCombiner.ThreeMsbFirst(readBuffer) >> (8 - powerMode);
         }
 
         private Int32 GetTemperatureCoefficient(Int32 uncompensatedTemperature)
@@ -131,13 +131,13 @@ namespace CopterBot.Sensors.Barometers
             var x1 = (coefficients.B2 * (b6 * b6 >> 12)) >> 11;
             var x2 = coefficients.Ac2 * b6 >> 11;
             var x3 = x1 + x2;
-            var b3 = ((((coefficients.Ac1 << 2) + x3) << oversampling) + 2) >> 2;
+            var b3 = ((((coefficients.Ac1 << 2) + x3) << powerMode) + 2) >> 2;
 
             x1 = coefficients.Ac3 * b6 >> 13;
             x2 = (coefficients.B1 * (b6 * b6 >> 12)) >> 16;
             x3 = (x1 + x2 + 2) >> 2;
             var b4 = coefficients.Ac4 * (UInt32)(x3 + 32768) >> 15;
-            var b7 = (UInt32)(uncompensatedPressure - b3) * (UInt32)(50000 >> oversampling);
+            var b7 = (UInt32)(uncompensatedPressure - b3) * (UInt32)(50000 >> powerMode);
 
             var p = (Int32)(b7 < 0x80000000 ? (b7 * 2) / b4 : (b7 / b4) * 2);
 

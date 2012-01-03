@@ -1,4 +1,4 @@
-﻿namespace CopterBot.Sensors.Common
+﻿namespace CopterBot.Sensors.Magnetometers
 {
     public enum Gain : byte
     {
@@ -9,6 +9,6 @@
         Level4 = 3,
         Level5 = 2,
         Level6 = 1,
-        Level7 = 0
+        Max = 0
     }
 }

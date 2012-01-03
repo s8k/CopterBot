@@ -11,9 +11,9 @@ namespace CopterBot.Sensors.Magnetometers
     /// </summary>
     public class Compass : IDisposable
     {
-        private const UInt16 Address = 0x1E;
-        private const int ClockRate = 100;
-        private const int Timeout = 50;
+        private const byte Address = 0x1E;
+        private const byte ClockRate = 100;
+        private const byte Timeout = 50;
 
         private readonly I2CDevice device = new I2CDevice(new I2CDevice.Configuration(Address, ClockRate));
 
@@ -22,14 +22,12 @@ namespace CopterBot.Sensors.Magnetometers
             device.Dispose();
         }
 
-        public void Init(Oversampling oversamplingLevel = Oversampling.Level1, Gain gainLevel = Gain.Level1)
+        public void Init(Gain gainLevel = Gain.Level6)
         {
-            var configRegister1 = new byte[] { 0x00, (byte)((byte)oversamplingLevel << 5 | 0x10) };
             var configRegister2 = new byte[] { 0x01, (byte)((byte)gainLevel << 5) };
 
             device.Execute(new I2CDevice.I2CTransaction[]
                                {
-                                   I2CDevice.CreateWriteTransaction(configRegister1),
                                    I2CDevice.CreateWriteTransaction(configRegister2)
                                },
                            Timeout);

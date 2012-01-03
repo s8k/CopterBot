@@ -39,14 +39,14 @@
     <Compile Include="Sensors\Accelerometers\ScaleRange.cs" />
     <Compile Include="Sensors\Barometers\Barometer.cs" />
     <Compile Include="Sensors\Barometers\BarometerCalibrationData.cs" />
+    <Compile Include="Sensors\Barometers\PowerMode.cs" />
     <Compile Include="Sensors\Common\ByteCombiner.cs" />
     <Compile Include="Sensors\Common\ISleepable.cs" />
-    <Compile Include="Sensors\Common\Oversampling.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Sensors\Magnetometers\Compass.cs" />
     <Compile Include="Sensors\Magnetometers\CompassDirections.cs" />
-    <Compile Include="Sensors\Common\Gain.cs" />
+    <Compile Include="Sensors\Magnetometers\Gain.cs" />
     <Compile Include="Visualization\ILcd.cs" />
     <Compile Include="Visualization\ILcdBusConfiguration.cs" />
     <Compile Include="Visualization\Lcd.cs" />
