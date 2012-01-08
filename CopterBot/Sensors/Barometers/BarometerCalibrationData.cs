@@ -1,5 +1,5 @@
 using System;
-using CopterBot.Sensors.Common;
+using CopterBot.Common;
 
 namespace CopterBot.Sensors.Barometers
 {
@@ -11,7 +11,7 @@ namespace CopterBot.Sensors.Barometers
         {
             for (byte i = 0; i < coefficients.Length; i++)
             {
-                coefficients[i] = ByteCombiner.TwoMsbFirst(data, i * 2);
+                coefficients[i] = data.TwoMsbFirst(i * 2);
             }
         }
 

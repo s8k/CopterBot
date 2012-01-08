@@ -1,4 +1,4 @@
-namespace CopterBot.Sensors.Common
+namespace CopterBot.Common.Interfaces
 {
     public interface ISleepable
     {

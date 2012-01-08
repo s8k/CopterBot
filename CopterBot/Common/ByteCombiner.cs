@@ -1,19 +1,19 @@
 using System;
 
-namespace CopterBot.Sensors.Common
+namespace CopterBot.Common
 {
     public static class ByteCombiner
     {
-        public static short TwoLsbFirst(byte[] array, int skip = 0)
+        public static short TwoLsbFirst(this byte[] array, int skip = 0)
         {
             return (short)Combine(2, true, array, skip);
         }
-        public static short TwoMsbFirst(byte[] array, int skip = 0)
+        public static short TwoMsbFirst(this byte[] array, int skip = 0)
         {
             return (short)Combine(2, false, array, skip);
         }
 
-        public static int ThreeMsbFirst(byte[] array, int skip = 0)
+        public static int ThreeMsbFirst(this byte[] array, int skip = 0)
         {
             return Combine(3, false, array, skip);
         }

@@ -1,7 +1,7 @@
 using System;
 using System.Threading;
-using CopterBot.Sensors.Common;
-using Microsoft.SPOT.Hardware;
+using CopterBot.Common;
+using CopterBot.Common.Interfaces;
 
 namespace CopterBot.Sensors.Magnetometers
 {
@@ -15,47 +15,35 @@ namespace CopterBot.Sensors.Magnetometers
         private const byte ClockRate = 100;
         private const byte Timeout = 50;
 
-        private readonly I2CDevice device = new I2CDevice(new I2CDevice.Configuration(Address, ClockRate));
+        private readonly II2CBus bus = new I2CBus(Address, ClockRate, Timeout);
 
         public void Dispose()
         {
-            device.Dispose();
+            bus.Dispose();
         }
 
         public void Init(Gain gainLevel = Gain.Level6)
         {
-            var configRegister2 = new byte[] { 0x01, (byte)((byte)gainLevel << 5) };
-
-            device.Execute(new I2CDevice.I2CTransaction[]
-                               {
-                                   I2CDevice.CreateWriteTransaction(configRegister2)
-                               },
-                           Timeout);
+            bus.Write(0x01, (byte)((byte)gainLevel << 5));
         }
         
         public CompassDirections GetDirections()
         {
             PerformSingleMeasurement();
-            
-            var directions = ReadDirections();
+
+            var bytes = bus.ReadSequence(0x03, 6);
 
             return new CompassDirections
                        {
-                           X = ByteCombiner.TwoMsbFirst(directions),
-                           Y = ByteCombiner.TwoMsbFirst(directions, 4),
-                           Z = ByteCombiner.TwoMsbFirst(directions, 2)
+                           X = bytes.TwoMsbFirst(),
+                           Y = bytes.TwoMsbFirst(4),
+                           Z = bytes.TwoMsbFirst(2)
                        };
         }
 
         private void PerformSingleMeasurement()
         {
-            var modeRegister = new byte[] { 0x02, 0x01 };
-
-            device.Execute(new I2CDevice.I2CTransaction[]
-                               {
-                                   I2CDevice.CreateWriteTransaction(modeRegister)
-                               },
-                           Timeout);
+            bus.Write(0x02, 0x01);
 
             while (!IsReady())
             {
@@ -65,32 +53,7 @@ namespace CopterBot.Sensors.Magnetometers
 
         private bool IsReady()
         {
-            var registerBuffer = new byte[] { 0x09 };
-            var readBuffer = new byte[1];
-
-            device.Execute(new I2CDevice.I2CTransaction[]
-                               {
-                                   I2CDevice.CreateWriteTransaction(registerBuffer),
-                                   I2CDevice.CreateReadTransaction(readBuffer)
-                               },
-                           Timeout);
-
-            return (readBuffer[0] & 0x01) == 0x01;
-        }
-
-        private byte[] ReadDirections()
-        {
-            var registerBuffer = new byte[] { 0x03 };
-            var readBuffer = new byte[6];
-
-            device.Execute(new I2CDevice.I2CTransaction[]
-                               {
-                                   I2CDevice.CreateWriteTransaction(registerBuffer),
-                                   I2CDevice.CreateReadTransaction(readBuffer)
-                               },
-                           Timeout);
-
-            return readBuffer;
+            return (bus.Read(0x09) & 0x01) == 0x01;
         }
 
         private static int GetDirectionsMeasurementTimeout()

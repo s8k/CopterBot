@@ -1,7 +1,6 @@
 ﻿using System.Threading;
 using CopterBot.Sensors.Accelerometers;
 using CopterBot.Sensors.Barometers;
-using CopterBot.Sensors.Common;
 using CopterBot.Sensors.Magnetometers;
 using CopterBot.Visualization;
 using GHIElectronics.NETMF.FEZ;

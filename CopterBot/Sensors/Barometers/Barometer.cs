@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
-using CopterBot.Sensors.Common;
-using Microsoft.SPOT.Hardware;
+using CopterBot.Common;
+using CopterBot.Common.Interfaces;
 
 namespace CopterBot.Sensors.Barometers
 {
@@ -16,31 +16,27 @@ namespace CopterBot.Sensors.Barometers
         private const byte Timeout = 50;
         private const float SeaLevelPressure = 101325;
 
-        private readonly I2CDevice device = new I2CDevice(new I2CDevice.Configuration(Address, ClockRate));
+        private readonly II2CBus bus = new I2CBus(Address, ClockRate, Timeout);
         
         private BarometerCalibrationData coefficients;
         private byte powerMode;
 
         public void Dispose()
         {
-            device.Dispose();
+            bus.Dispose();
         }
 
         public void Init(PowerMode power = PowerMode.Standard)
         {
             powerMode = (byte)power;
+            ReadCalibrationData();
+        }
 
-            var readRegister = new byte[] { 0xAA };
-            var readBuffer = new byte[22];
+        private void ReadCalibrationData()
+        {
+            var bytes = bus.ReadSequence(0xAA, 22);
 
-            device.Execute(new I2CDevice.I2CTransaction[]
-                               {
-                                   I2CDevice.CreateWriteTransaction(readRegister),
-                                   I2CDevice.CreateReadTransaction(readBuffer)
-                               },
-                           Timeout);
-
-            coefficients = new BarometerCalibrationData(readBuffer);
+            coefficients = new BarometerCalibrationData(bytes);
         }
 
         public float GetTemperature()
@@ -63,50 +59,21 @@ namespace CopterBot.Sensors.Barometers
 
         private Int32 ReadUncompensatedTemperature()
         {
-            var writeBuffer = new byte[] { 0xF4, 0x2E };
-            var readRegister = new byte[] { 0xF6 };
-            var readBuffer = new byte[2];
-
-            device.Execute(new I2CDevice.I2CTransaction[]
-                               {
-                                   I2CDevice.CreateWriteTransaction(writeBuffer)
-                               },
-                           Timeout);
-
+            bus.Write(0xF4, 0x2E);
+            
             Thread.Sleep(GetTemperatureMeasurementTimeout());
 
-            device.Execute(new I2CDevice.I2CTransaction[]
-                               {
-                                   I2CDevice.CreateWriteTransaction(readRegister),
-                                   I2CDevice.CreateReadTransaction(readBuffer)
-                               },
-                           Timeout);
-
-            return ByteCombiner.TwoMsbFirst(readBuffer);
+            return bus.ReadSequence(0xF6, 2).TwoMsbFirst();
         }
 
         private Int32 ReadUncompensatedPressure()
         {
-            var writeRegister = new byte[] { 0xF4, (byte)(powerMode << 6 | 0x34) };
-            var readRegister = new byte[] { 0xF6 };
-            var readBuffer = new byte[3];
 
-            device.Execute(new I2CDevice.I2CTransaction[]
-                               {
-                                   I2CDevice.CreateWriteTransaction(writeRegister)
-                               },
-                           Timeout);
+            bus.Write(0xF4, (byte)(powerMode << 6 | 0x34));
 
             Thread.Sleep(GetPressureMeasurementTimeout(powerMode));
 
-            device.Execute(new I2CDevice.I2CTransaction[]
-                               {
-                                   I2CDevice.CreateWriteTransaction(readRegister),
-                                   I2CDevice.CreateReadTransaction(readBuffer)
-                               },
-                           Timeout);
-
-            return ByteCombiner.ThreeMsbFirst(readBuffer) >> (8 - powerMode);
+            return bus.ReadSequence(0xF6, 3).ThreeMsbFirst() >> (8 - powerMode);
         }
 
         private Int32 GetTemperatureCoefficient(Int32 uncompensatedTemperature)

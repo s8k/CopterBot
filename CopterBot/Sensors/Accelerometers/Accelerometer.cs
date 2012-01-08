@@ -1,6 +1,6 @@
 ﻿using System;
-using CopterBot.Sensors.Common;
-using Microsoft.SPOT.Hardware;
+using CopterBot.Common;
+using CopterBot.Common.Interfaces;
 
 namespace CopterBot.Sensors.Accelerometers
 {
@@ -14,13 +14,13 @@ namespace CopterBot.Sensors.Accelerometers
         private const byte ClockRate = 100;
         private const byte Timeout = 50;
 
-        private readonly I2CDevice device = new I2CDevice(new I2CDevice.Configuration(Address, ClockRate));
+        private readonly II2CBus bus = new I2CBus(Address, ClockRate, Timeout);
 
         private float scaleRange;
 
         public void Dispose()
         {
-            device.Dispose();
+            bus.Dispose();
         }
 
         public void Init(ScaleRange scale = ScaleRange.G2, Bandwidth bandwidth = Bandwidth.Hz150)
@@ -33,156 +33,46 @@ namespace CopterBot.Sensors.Accelerometers
 
         public void Sleep()
         {
-            var registerBuffer = new byte[] { 0x0D };
-            var readBuffer = new byte[1];
-
-            device.Execute(new I2CDevice.I2CTransaction[]
-                               {
-                                   I2CDevice.CreateWriteTransaction(registerBuffer),
-                                   I2CDevice.CreateReadTransaction(readBuffer)
-                               },
-                           Timeout);
-
-            var newValue = (byte)(readBuffer[0] | 0x02);
-            var toWrite = new byte[] { 0x0D, newValue };
-
-            device.Execute(new I2CDevice.I2CTransaction[]
-                               {
-                                   I2CDevice.CreateWriteTransaction(toWrite)
-                               },
-                           Timeout);
+            bus.Update(0x0D, value => (byte)(value | 0x02));
         }
 
         public void Wakeup()
         {
-            var registerBuffer = new byte[] { 0x0D };
-            var readBuffer = new byte[1];
-
-            device.Execute(new I2CDevice.I2CTransaction[]
-                               {
-                                   I2CDevice.CreateWriteTransaction(registerBuffer),
-                                   I2CDevice.CreateReadTransaction(readBuffer)
-                               },
-                           Timeout);
-
-            var newValue = (byte)(readBuffer[0] & 0xFD);
-            var toWrite = new byte[] { 0x0D, newValue };
-
-            device.Execute(new I2CDevice.I2CTransaction[]
-                               {
-                                   I2CDevice.CreateWriteTransaction(toWrite)
-                               },
-                           Timeout);
+            bus.Update(0x0D, value => (byte)(value & 0xFD));
         }
 
         private void SetBandwidth(byte bandwidth)
         {
-            var registerBuffer = new byte[] { 0x20 };
-            var readBuffer = new byte[1];
-
-            device.Execute(new I2CDevice.I2CTransaction[]
-                               {
-                                   I2CDevice.CreateWriteTransaction(registerBuffer),
-                                   I2CDevice.CreateReadTransaction(readBuffer)
-                               },
-                           Timeout);
-
-            var newValue = (byte)(readBuffer[0] & 0x0F | (bandwidth << 4));
-            var toWrite = new byte[] { 0x20, newValue };
-
-            device.Execute(new I2CDevice.I2CTransaction[]
-                               {
-                                   I2CDevice.CreateWriteTransaction(toWrite)
-                               },
-                           Timeout);
+            bus.Update(0x20, value => (byte)(value & 0x0F | (bandwidth << 4)));
         }
 
-        private void SetScaleRange(byte scaleRange)
+        private void SetScaleRange(byte scale)
         {
             var scaleRangeMap = new[] { 1, 1.5f, 2, 3, 4, 8, 16 };
-            this.scaleRange = scaleRangeMap[scaleRange];
+            scaleRange = scaleRangeMap[scale];
 
-            var registerBuffer = new byte[] { 0x35 };
-            var readBuffer = new byte[1];
-
-            device.Execute(new I2CDevice.I2CTransaction[]
-                               {
-                                   I2CDevice.CreateWriteTransaction(registerBuffer),
-                                   I2CDevice.CreateReadTransaction(readBuffer)
-                               },
-                           Timeout);
-
-            var newValue = (byte)(readBuffer[0] & 0xF1 | (scaleRange << 1));
-            var toWrite = new byte[] { 0x35, newValue };
-
-            device.Execute(new I2CDevice.I2CTransaction[]
-                               {
-                                   I2CDevice.CreateWriteTransaction(toWrite)
-                               },
-                           Timeout);
+            bus.Update(0x35, value => (byte)(value & 0xF1 | (scale << 1)));
         }
 
         private void BlockMsbWhileLsbIsRead()
         {
-            var registerBuffer = new byte[] { 0x33 };
-            var readBuffer = new byte[1];
-
-            device.Execute(new I2CDevice.I2CTransaction[]
-                               {
-                                   I2CDevice.CreateWriteTransaction(registerBuffer),
-                                   I2CDevice.CreateReadTransaction(readBuffer)
-                               },
-                           Timeout);
-
-            var newValue = (byte)(readBuffer[0] | 0x01);
-            var toWrite = new byte[] { 0x33, newValue };
-
-            device.Execute(new I2CDevice.I2CTransaction[]
-                               {
-                                   I2CDevice.CreateWriteTransaction(toWrite)
-                               },
-                           Timeout);
+            bus.Update(0x33, value => (byte)(value | 0x01));
         }
 
         private void EnableSettingsEditing()
         {
-            var registerBuffer = new byte[] { 0x0D };
-            var readBuffer = new byte[1];
-
-            device.Execute(new I2CDevice.I2CTransaction[]
-                               {
-                                   I2CDevice.CreateWriteTransaction(registerBuffer),
-                                   I2CDevice.CreateReadTransaction(readBuffer)
-                               },
-                           Timeout);
-
-            var newValue = (byte)(readBuffer[0] | 0x10);
-            var toWrite = new byte[] { 0x0D, newValue };
-
-            device.Execute(new I2CDevice.I2CTransaction[]
-                               {
-                                   I2CDevice.CreateWriteTransaction(toWrite)
-                               },
-                           Timeout);
+            bus.Update(0x0D, value => (byte)(value | 0x10));
         }
 
         public AccelerometerDirections GetDirections()
         {
-            var registerBuffer = new byte[] { 0x02 };
-            var readBuffer = new byte[6];
-
-            device.Execute(new I2CDevice.I2CTransaction[]
-                               {
-                                   I2CDevice.CreateWriteTransaction(registerBuffer),
-                                   I2CDevice.CreateReadTransaction(readBuffer)
-                               },
-                           Timeout);
+            var bytes = bus.ReadSequence(0x02, 6);
 
             return new AccelerometerDirections
                        {
-                           X = Adjust(ByteCombiner.TwoLsbFirst(readBuffer)),
-                           Y = Adjust(ByteCombiner.TwoLsbFirst(readBuffer, 2)),
-                           Z = Adjust(ByteCombiner.TwoLsbFirst(readBuffer, 4))
+                           X = Adjust(bytes.TwoLsbFirst()),
+                           Y = Adjust(bytes.TwoLsbFirst(2)),
+                           Z = Adjust(bytes.TwoLsbFirst(4))
                        };
         }
 
