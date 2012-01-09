@@ -52,6 +52,7 @@
     <Compile Include="Sensors\Magnetometers\CompassDirections.cs" />
     <Compile Include="Sensors\Magnetometers\Gain.cs" />
     <Compile Include="Visualization\ILcd.cs" />
+    <Compile Include="Visualization\ILcdBus.cs" />
     <Compile Include="Visualization\ILcdBusConfiguration.cs" />
     <Compile Include="Visualization\Lcd.cs" />
     <Compile Include="Visualization\Lcd4BitCommand.cs" />

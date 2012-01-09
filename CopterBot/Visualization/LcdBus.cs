@@ -2,7 +2,7 @@ using Microsoft.SPOT.Hardware;
 
 namespace CopterBot.Visualization
 {
-    public class LcdBus
+    public class LcdBus : ILcdBus
     {
         public LcdBus(ILcdBusConfiguration configuration)
         {

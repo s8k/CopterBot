@@ -10,7 +10,7 @@ namespace CopterBot.Visualization
     public class Lcd : ILcd
     {
         private const int LineLength = 16;
-        private readonly LcdBus bus;
+        private readonly ILcdBus bus;
 
         public Lcd(ILcdBusConfiguration configuration)
         {
