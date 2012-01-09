@@ -19,7 +19,7 @@ namespace CopterBot.Visualization
 
         public void Dispose()
         {
-            //SendCommand(LcdCommand.TurnOffDisplay);
+            //SendCommand(Lcd8BitCommand.TurnOffDisplay);
             bus.Dispose();
         }
 
@@ -28,16 +28,16 @@ namespace CopterBot.Visualization
             Thread.Sleep(50);
             for (byte i = 0; i < 3; i++)
             {
-                SendCommand(LcdCommand.Init);
+                SendCommand(Lcd4BitCommand.Init);
                 Thread.Sleep(5);
             }
 
-            SendCommand(LcdCommand.Enable4BitInterface);
-            SendCommand(LcdCommand.CleanScreen);
-            SendCommand(LcdCommand.ReturnCursorHome);
-            SendCommand(LcdCommand.SetTwoLinesMode);
-            SendCommand(LcdCommand.SetDisplayShift);
-            SendCommand(LcdCommand.TurnOnDisplay);
+            SendCommand(Lcd4BitCommand.Enable4BitInterface);
+            SendCommand(Lcd8BitCommand.CleanScreen);
+            SendCommand(Lcd8BitCommand.ReturnCursorHome);
+            SendCommand(Lcd8BitCommand.SetTwoLinesMode);
+            SendCommand(Lcd8BitCommand.SetDisplayShift);
+            SendCommand(Lcd8BitCommand.TurnOnDisplay);
         }
 
         public void Print(string text)
@@ -46,7 +46,7 @@ namespace CopterBot.Visualization
 
             if (text.Length > LineLength)
             {
-                SendCommand(LcdCommand.CursorToSecondLine);
+                SendCommand(Lcd8BitCommand.CursorToSecondLine);
                 SendLine(text.Substring(LineLength));
             }
         }
@@ -54,14 +54,14 @@ namespace CopterBot.Visualization
         public void Print1Line(string text)
         {
             CheckArgument(text);
-            SendCommand(LcdCommand.ReturnCursorHome);
+            SendCommand(Lcd8BitCommand.ReturnCursorHome);
             SendLine(text);
         }
 
         public void Print2Line(string text)
         {
             CheckArgument(text);
-            SendCommand(LcdCommand.CursorToSecondLine);
+            SendCommand(Lcd8BitCommand.CursorToSecondLine);
             SendLine(text);
         }
 
@@ -71,11 +71,11 @@ namespace CopterBot.Visualization
             {
                 if (i >= line.Length)
                 {
-                    SendCharacter(' ');
+                    SendAsciiCharacter(' ');
                     continue;
                 }
 
-                SendCharacter(line[i]);
+                SendAsciiCharacter(line[i]);
             }
         }
 
@@ -87,59 +87,50 @@ namespace CopterBot.Visualization
             }
         }
 
-        private void SendCommand(string command)
+        private void SendCommand(Lcd4BitCommand command)
         {
             EnterCommandMode();
 
-            SetHigh4Bit(command);
+            SetHigh4Bit((byte)command);
             PerformOperation();
-
-            if (command.Length == 8)
-            {
-                SetLow4Bit(command);
-                PerformOperation();
-            }
         }
 
-        private void SendCharacter(char ch)
+        private void SendCommand(Lcd8BitCommand command)
+        {
+            EnterCommandMode();
+
+            SetHigh4Bit((byte)command);
+            PerformOperation();
+
+            SetLow4Bit((byte)command);
+            PerformOperation();
+        }
+
+        private void SendAsciiCharacter(char ch)
         {
             EnterCharacterMode();
-            SetHigh4Bit(ch);
+
+            SetHigh4Bit((byte)ch);
             PerformOperation();
-            SetLow4Bit(ch);
+            
+            SetLow4Bit((byte)ch);
             PerformOperation();
         }
 
-        private void SetHigh4Bit(string command)
+        private void SetHigh4Bit(byte value)
         {
-            bus.DataBit3.Write(command[0] == '1');
-            bus.DataBit2.Write(command[1] == '1');
-            bus.DataBit1.Write(command[2] == '1');
-            bus.DataBit0.Write(command[3] == '1');
+            bus.DataBit3.Write(GetBit(value, 7));
+            bus.DataBit2.Write(GetBit(value, 6));
+            bus.DataBit1.Write(GetBit(value, 5));
+            bus.DataBit0.Write(GetBit(value, 4));
         }
 
-        private void SetLow4Bit(string command)
+        private void SetLow4Bit(byte value)
         {
-            bus.DataBit3.Write(command[4] == '1');
-            bus.DataBit2.Write(command[5] == '1');
-            bus.DataBit1.Write(command[6] == '1');
-            bus.DataBit0.Write(command[7] == '1');
-        }
-
-        private void SetHigh4Bit(char ch)
-        {
-            bus.DataBit3.Write((ch & 0x80) == 0x80);
-            bus.DataBit2.Write((ch & 0x40) == 0x40);
-            bus.DataBit1.Write((ch & 0x20) == 0x20);
-            bus.DataBit0.Write((ch & 0x10) == 0x10);
-        }
-
-        private void SetLow4Bit(char ch)
-        {
-            bus.DataBit3.Write((ch & 0x08) == 0x08);
-            bus.DataBit2.Write((ch & 0x04) == 0x04);
-            bus.DataBit1.Write((ch & 0x02) == 0x02);
-            bus.DataBit0.Write((ch & 0x01) == 0x01);
+            bus.DataBit3.Write(GetBit(value, 3));
+            bus.DataBit2.Write(GetBit(value, 2));
+            bus.DataBit1.Write(GetBit(value, 1));
+            bus.DataBit0.Write(GetBit(value, 0));
         }
 
         private void EnterCharacterMode()
@@ -157,6 +148,13 @@ namespace CopterBot.Visualization
             bus.Enable.Write(true);
             Thread.Sleep(2);
             bus.Enable.Write(false);
+        }
+
+        private static bool GetBit(byte value, byte position)
+        {
+            var bit = 0x01 << position;
+
+            return (value & bit) == bit;
         }
     }
 }
