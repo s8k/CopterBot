@@ -6,15 +6,15 @@ namespace CopterBot.Sensors.Barometers
     /// <summary>
     /// Calibration coefficients required for preasure and temperature calculation from raw data.
     /// </summary>
-    public class BarometerCalibrationData
+    public class CalibrationCoefficients
     {
         private readonly Int16[] coefficients = new Int16[11];
 
         /// <summary>
-        /// Constructs BarometerCalibrationData object.
+        /// Constructs the CalibrationCoefficients object.
         /// </summary>
         /// <param name="data">Read calibration registers (0xAA – 0xBF) data.</param>
-        public BarometerCalibrationData(byte[] data)
+        public CalibrationCoefficients(byte[] data)
         {
             for (byte i = 0; i < coefficients.Length; i++)
             {

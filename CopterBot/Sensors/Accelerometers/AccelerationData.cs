@@ -2,7 +2,7 @@
 
 namespace CopterBot.Sensors.Accelerometers
 {
-    public class AccelerometerDirections
+    public class AccelerationData
     {
         public float X { get; set; }
 

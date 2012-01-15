@@ -35,7 +35,7 @@ namespace CopterBot
 //                
 //                for (int i = 0; i < 500; i++)
 //                {
-//                    var accelerometerDirections = accelerometer.GetDirections();
+//                    var accelerometerDirections = accelerometer.GetValuesByAxes();
 //
 //                    Debug.Print("X: " + accelerometerDirections.X.ToString("F2"));
 //                    Debug.Print("Y: " + accelerometerDirections.Y.ToString("F2"));
@@ -56,7 +56,7 @@ namespace CopterBot
 //
 //                    for (var i = 0; i < 200; i++)
 //                    {
-//                        var d = gyroscope.GetDirections();
+//                        var d = gyroscope.GetValuesByAxes();
 //
 //                        display.Print1Line(string.Concat("X: ", d.X.ToString("F2")));
 //                        display.Print2Line(string.Concat("Y: ", d.Y.ToString("F2"), " Z: ", d.Z.ToString("F2")));
@@ -67,7 +67,7 @@ namespace CopterBot
 //
 //                    for (var i = 0; i < 200; i++)
 //                    {
-//                        var d = gyroscope.GetDirections();
+//                        var d = gyroscope.GetValuesByAxes();
 //
 //                        display.Print1Line(string.Concat("X: ", d.X.ToString("F2")));
 //                        display.Print2Line(string.Concat("Y: ", d.Y.ToString("F2"), " Z: ", d.Z.ToString("F2")));
@@ -78,7 +78,7 @@ namespace CopterBot
 //
 //                    for (var i = 0; i < 200; i++)
 //                    {
-//                        var d = gyroscope.GetDirections();
+//                        var d = gyroscope.GetValuesByAxes();
 //
 //                        display.Print1Line(string.Concat("X: ", d.X.ToString("F2")));
 //                        display.Print2Line(string.Concat("Y: ", d.Y.ToString("F2"), " Z: ", d.Z.ToString("F2")));

@@ -18,7 +18,7 @@ namespace CopterBot.Sensors.Barometers
 
         private readonly II2CBus bus = new I2CBus(Address, ClockRate, Timeout);
         
-        private BarometerCalibrationData coefficients;
+        private CalibrationCoefficients coefficients;
         private byte powerMode;
 
         public void Dispose()
@@ -39,7 +39,6 @@ namespace CopterBot.Sensors.Barometers
         /// <summary>
         /// Gets temperature value in Celsius degrees.
         /// </summary>
-        /// <returns></returns>
         public float GetTemperature()
         {
             return CompensateTemperature(ReadUncompensatedTemperature());
@@ -48,7 +47,6 @@ namespace CopterBot.Sensors.Barometers
         /// <summary>
         /// Gets atmospheric pressure value in pascals (Pa).
         /// </summary>
-        /// <returns></returns>
         public Int32 GetPressure()
         {
             return CompensatePressure(ReadUncompensatedTemperature(), ReadUncompensatedPressure());
@@ -57,7 +55,6 @@ namespace CopterBot.Sensors.Barometers
         /// <summary>
         /// Gets true altitude value in meters (the elevation above mean sea level).
         /// </summary>
-        /// <returns></returns>
         public float GetAltitude()
         {
             var pressure = GetPressure();
@@ -70,7 +67,7 @@ namespace CopterBot.Sensors.Barometers
         {
             var bytes = bus.ReadSequence(0xAA, 22);
 
-            coefficients = new BarometerCalibrationData(bytes);
+            coefficients = new CalibrationCoefficients(bytes);
         }
 
         private Int32 ReadUncompensatedTemperature()

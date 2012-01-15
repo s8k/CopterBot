@@ -34,7 +34,7 @@ namespace CopterBot.Sensors.Magnetometers
         /// <summary>
         /// Gets magnetic vector.
         /// Output range: 0xF800 – 0x07FF (-2048 – 2047).
-        /// If there is a math overflow during the bias measurement, faulty values will be equal to -4096.
+        /// Important: If there is a math overflow during the bias measurement, faulty values will be equal to -4096.
         /// </summary>
         public MagneticVector GetVector()
         {

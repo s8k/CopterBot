@@ -1,6 +1,6 @@
 ﻿namespace CopterBot.Sensors.Gyroscopes
 {
-    public class GyroscopeDirections
+    public class GyroData
     {
         public float X { get; set; }
 

@@ -33,6 +33,11 @@ namespace CopterBot.Sensors.Accelerometers
             bus.Update(0x0D, value => (byte)(value & 0xFD));
         }
 
+        /// <summary>
+        /// Puts the sensor into initial state.
+        /// </summary>
+        /// <param name="scale">Full scale acceleration range.</param>
+        /// <param name="bandwidth">Bandwidth defining type and quality of filters.</param>
         public void Init(ScaleRange scale = ScaleRange.G2, Bandwidth bandwidth = Bandwidth.Hz150)
         {
             EnableSettingsEditing();
@@ -41,11 +46,15 @@ namespace CopterBot.Sensors.Accelerometers
             BlockMsbWhileLsbIsRead();
         }
 
-        public AccelerometerDirections GetDirections()
+        /// <summary>
+        /// Gets acceleration values in g units (gravitational acceleration ~ 9.8 m/s^2).
+        /// Important: When high-pass or band-pass filter is turned on, the sensor doesn't return value for standard acceleration due to free fall.
+        /// </summary>
+        public AccelerationData GetValuesByAxes()
         {
             var bytes = bus.ReadSequence(0x02, 6);
 
-            return new AccelerometerDirections
+            return new AccelerationData
                        {
                            X = Adjust(bytes.TwoLsbFirst()),
                            Y = Adjust(bytes.TwoLsbFirst(2)),

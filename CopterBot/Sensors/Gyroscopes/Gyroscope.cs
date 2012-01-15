@@ -48,11 +48,11 @@ namespace CopterBot.Sensors.Gyroscopes
         /// <summary>
         /// Gets gyro values in degree/second.
         /// </summary>
-        public GyroscopeDirections GetDirections()
+        public GyroData GetValuesByAxes()
         {
             var bytes = bus.ReadSequence(0x1D, 6);
 
-            return new GyroscopeDirections
+            return new GyroData
                        {
                            X = bytes.TwoMsbFirst() / 14.375f,
                            Y = bytes.TwoMsbFirst(2) / 14.375f,
