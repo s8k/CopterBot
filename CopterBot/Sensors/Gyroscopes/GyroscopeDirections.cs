@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace CopterBot.Sensors.Gyroscopes
+﻿namespace CopterBot.Sensors.Gyroscopes
 {
     public class GyroscopeDirections
     {

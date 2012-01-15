@@ -52,7 +52,7 @@
     <Compile Include="Sensors\Gyroscopes\Gyroscope.cs" />
     <Compile Include="Sensors\Gyroscopes\Bandwidth.cs" />
     <Compile Include="Sensors\Magnetometers\Compass.cs" />
-    <Compile Include="Sensors\Magnetometers\CompassDirections.cs" />
+    <Compile Include="Sensors\Magnetometers\MagneticVector.cs" />
     <Compile Include="Sensors\Magnetometers\Gain.cs" />
     <Compile Include="Visualization\ILcd.cs" />
     <Compile Include="Visualization\ILcdBus.cs" />

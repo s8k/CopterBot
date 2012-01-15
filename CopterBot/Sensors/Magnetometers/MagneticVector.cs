@@ -2,7 +2,7 @@
 
 namespace CopterBot.Sensors.Magnetometers
 {
-    public class CompassDirections
+    public class MagneticVector
     {
         public Int16 X { get; set; }
 

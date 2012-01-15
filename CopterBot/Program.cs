@@ -21,7 +21,7 @@ namespace CopterBot
 //
 //                for (int i = 0; i < 15; i++)
 //                {
-//                    var directions = compass.GetDirections();
+//                    var directions = compass.GetVector();
 //
 //                    Debug.Print(string.Concat("X: ", directions.X, " Y: ", directions.Y, " Z: ", directions.Z));
 //
@@ -105,7 +105,7 @@ namespace CopterBot
 //                {
 //                    compass.Init(gainLevel: Gain.Level5);
 //
-//                    var directions = compass.GetDirections();
+//                    var directions = compass.GetVector();
 //
 //                    display.Print(string.Concat("X: ", directions.X, " Y: ", directions.Y, " Z: ", directions.Z));
 //                }

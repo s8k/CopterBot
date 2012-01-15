@@ -22,18 +22,27 @@ namespace CopterBot.Sensors.Magnetometers
             bus.Dispose();
         }
 
+        /// <summary>
+        /// Puts the sensor into initial state.
+        /// </summary>
+        /// <param name="gainLevel">Gain level configuration.</param>
         public void Init(Gain gainLevel = Gain.Level6)
         {
             bus.Write(0x01, (byte)((byte)gainLevel << 5));
         }
         
-        public CompassDirections GetDirections()
+        /// <summary>
+        /// Gets magnetic vector.
+        /// Output range: 0xF800 – 0x07FF (-2048 – 2047).
+        /// If there is a math overflow during the bias measurement, faulty values will be equal to -4096.
+        /// </summary>
+        public MagneticVector GetVector()
         {
             PerformSingleMeasurement();
 
             var bytes = bus.ReadSequence(0x03, 6);
 
-            return new CompassDirections
+            return new MagneticVector
                        {
                            X = bytes.TwoMsbFirst(),
                            Y = bytes.TwoMsbFirst(4),
