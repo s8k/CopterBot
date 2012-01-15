@@ -26,10 +26,44 @@ namespace CopterBot.Sensors.Barometers
             bus.Dispose();
         }
 
+        /// <summary>
+        /// Puts the sensor into initial state.
+        /// </summary>
+        /// <param name="power">Power consumption/resolution mode.</param>
         public void Init(PowerMode power = PowerMode.Standard)
         {
             powerMode = (byte)power;
             ReadCalibrationData();
+        }
+
+        /// <summary>
+        /// Gets temperature value in Celsius degrees.
+        /// </summary>
+        /// <returns></returns>
+        public float GetTemperature()
+        {
+            return CompensateTemperature(ReadUncompensatedTemperature());
+        }
+
+        /// <summary>
+        /// Gets atmospheric pressure value in pascals (Pa).
+        /// </summary>
+        /// <returns></returns>
+        public Int32 GetPressure()
+        {
+            return CompensatePressure(ReadUncompensatedTemperature(), ReadUncompensatedPressure());
+        }
+
+        /// <summary>
+        /// Gets true altitude value in meters (the elevation above mean sea level).
+        /// </summary>
+        /// <returns></returns>
+        public float GetAltitude()
+        {
+            var pressure = GetPressure();
+            var altitude = (float)(44330 * (1 - Math.Pow(pressure / SeaLevelPressure, 1 / 5.255f)));
+
+            return altitude;
         }
 
         private void ReadCalibrationData()
@@ -37,24 +71,6 @@ namespace CopterBot.Sensors.Barometers
             var bytes = bus.ReadSequence(0xAA, 22);
 
             coefficients = new BarometerCalibrationData(bytes);
-        }
-
-        public float GetTemperature()
-        {
-            return CompensateTemperature(ReadUncompensatedTemperature());
-        }
-
-        public Int32 GetPressure()
-        {
-            return CompensatePressure(ReadUncompensatedTemperature(), ReadUncompensatedPressure());
-        }
-
-        public float GetAltitude()
-        {
-            var pressure = GetPressure();
-            var altitude = (float)(44330 * (1 - Math.Pow(pressure / SeaLevelPressure, 1 / 5.255f)));
-
-            return altitude;
         }
 
         private Int32 ReadUncompensatedTemperature()

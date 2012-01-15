@@ -48,58 +48,57 @@ namespace CopterBot
 
             using (var display = new Lcd(GetLcdBusConfiguration()))
             {
-                display.Init();
-
-                using (var gyroscope = new Gyroscope())
-                {
-                    gyroscope.Init(Bandwidth.Hz5);
-
-                    for (var i = 0; i < 200; i++)
-                    {
-                        var d = gyroscope.GetDirections();
-
-                        display.Print1Line(string.Concat("X: ", d.X.ToString("F2")));
-                        display.Print2Line(string.Concat("Y: ", d.Y.ToString("F2"), " Z: ", d.Z.ToString("F2")));
-                    }
-
-
-                    gyroscope.Sleep();
-
-                    for (var i = 0; i < 200; i++)
-                    {
-                        var d = gyroscope.GetDirections();
-
-                        display.Print1Line(string.Concat("X: ", d.X.ToString("F2")));
-                        display.Print2Line(string.Concat("Y: ", d.Y.ToString("F2"), " Z: ", d.Z.ToString("F2")));
-                    }
-
-
-                    gyroscope.Wakeup();
-
-                    for (var i = 0; i < 200; i++)
-                    {
-                        var d = gyroscope.GetDirections();
-
-                        display.Print1Line(string.Concat("X: ", d.X.ToString("F2")));
-                        display.Print2Line(string.Concat("Y: ", d.Y.ToString("F2"), " Z: ", d.Z.ToString("F2")));
-                    }
-                }
-
-
 //                display.Init();
+//
+//                using (var gyroscope = new Gyroscope())
+//                {
+//                    gyroscope.Init(Bandwidth.Hz5);
+//
+//                    for (var i = 0; i < 200; i++)
+//                    {
+//                        var d = gyroscope.GetDirections();
+//
+//                        display.Print1Line(string.Concat("X: ", d.X.ToString("F2")));
+//                        display.Print2Line(string.Concat("Y: ", d.Y.ToString("F2"), " Z: ", d.Z.ToString("F2")));
+//                    }
+//
+//
+//                    gyroscope.Sleep();
+//
+//                    for (var i = 0; i < 200; i++)
+//                    {
+//                        var d = gyroscope.GetDirections();
+//
+//                        display.Print1Line(string.Concat("X: ", d.X.ToString("F2")));
+//                        display.Print2Line(string.Concat("Y: ", d.Y.ToString("F2"), " Z: ", d.Z.ToString("F2")));
+//                    }
+//
+//
+//                    gyroscope.Wakeup();
+//
+//                    for (var i = 0; i < 200; i++)
+//                    {
+//                        var d = gyroscope.GetDirections();
+//
+//                        display.Print1Line(string.Concat("X: ", d.X.ToString("F2")));
+//                        display.Print2Line(string.Concat("Y: ", d.Y.ToString("F2"), " Z: ", d.Z.ToString("F2")));
+//                    }
+//                }
+
+
+                display.Init();
 //                display.Print("All your base   are belong to us");
 //                display.Print1Line("first line");
 //                display.Print2Line("second line");
 
 
-//                using (var barometer = new Barometer())
-//                {
-//                    barometer.Init();
-//
-//                    display.Print(string.Concat("Temperature: ", barometer.GetTemperature().ToString("F1"), " *C"));
-//                    display.Print(string.Concat("Pressure: ", barometer.GetPressure(), " Pa"));
-//                    display.Print(string.Concat("Altitude: ", barometer.GetAltitude().ToString("F2"), " m"));
-//                }
+                using (var barometer = new Barometer())
+                {
+                    barometer.Init();
+
+                    display.Print1Line(string.Concat("P: ", barometer.GetPressure(), " T: ", barometer.GetTemperature().ToString("F1")));
+                    display.Print2Line(string.Concat("Alt: ", barometer.GetAltitude().ToString("F2"), " m"));
+                }
 
 //                using (var compass = new Compass())
 //                {
