@@ -1,11 +1,13 @@
 ﻿using System.Threading;
 using CopterBot.Sensors.Accelerometers;
 using CopterBot.Sensors.Barometers;
+using CopterBot.Sensors.Gyroscopes;
 using CopterBot.Sensors.Magnetometers;
 using CopterBot.Visualization;
 using GHIElectronics.NETMF.FEZ;
 using Microsoft.SPOT;
 using Microsoft.SPOT.Hardware;
+using Bandwidth = CopterBot.Sensors.Gyroscopes.Bandwidth;
 
 namespace CopterBot
 {
@@ -13,19 +15,19 @@ namespace CopterBot
     {
         public static void Main()
         {
-            using (var compass = new Compass())
-            {
-                compass.Init(Gain.Max);
-
-                for (int i = 0; i < 15; i++)
-                {
-                    var directions = compass.GetDirections();
-
-                    Debug.Print(string.Concat("X: ", directions.X, " Y: ", directions.Y, " Z: ", directions.Z));
-
-                    Thread.Sleep(500);
-                }
-            }
+//            using (var compass = new Compass())
+//            {
+//                compass.Init(Gain.Max);
+//
+//                for (int i = 0; i < 15; i++)
+//                {
+//                    var directions = compass.GetDirections();
+//
+//                    Debug.Print(string.Concat("X: ", directions.X, " Y: ", directions.Y, " Z: ", directions.Z));
+//
+//                    Thread.Sleep(500);
+//                }
+//            }
 
 //            using (var accelerometer = new Accelerometer())
 //            {
@@ -46,6 +48,44 @@ namespace CopterBot
 
             using (var display = new Lcd(GetLcdBusConfiguration()))
             {
+                display.Init();
+
+                using (var gyroscope = new Gyroscope())
+                {
+                    gyroscope.Init(Bandwidth.Hz5);
+
+                    for (var i = 0; i < 200; i++)
+                    {
+                        var d = gyroscope.GetDirections();
+
+                        display.Print1Line(string.Concat("X: ", d.X.ToString("F2")));
+                        display.Print2Line(string.Concat("Y: ", d.Y.ToString("F2"), " Z: ", d.Z.ToString("F2")));
+                    }
+
+
+                    gyroscope.Sleep();
+
+                    for (var i = 0; i < 200; i++)
+                    {
+                        var d = gyroscope.GetDirections();
+
+                        display.Print1Line(string.Concat("X: ", d.X.ToString("F2")));
+                        display.Print2Line(string.Concat("Y: ", d.Y.ToString("F2"), " Z: ", d.Z.ToString("F2")));
+                    }
+
+
+                    gyroscope.Wakeup();
+
+                    for (var i = 0; i < 200; i++)
+                    {
+                        var d = gyroscope.GetDirections();
+
+                        display.Print1Line(string.Concat("X: ", d.X.ToString("F2")));
+                        display.Print2Line(string.Concat("Y: ", d.Y.ToString("F2"), " Z: ", d.Z.ToString("F2")));
+                    }
+                }
+
+
 //                display.Init();
 //                display.Print("All your base   are belong to us");
 //                display.Print1Line("first line");

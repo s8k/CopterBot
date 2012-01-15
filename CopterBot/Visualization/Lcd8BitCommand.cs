@@ -53,6 +53,6 @@ namespace CopterBot.Visualization
         /// A0-6: address of the cell
         /// (0x40 - beginning of the second line)
         /// </summary>
-        CursorToSecondLine = 0xC0
+        CursorToTheSecondLine = 0xC0
     }
 }

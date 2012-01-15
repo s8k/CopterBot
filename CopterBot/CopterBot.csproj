@@ -48,6 +48,9 @@
     <Compile Include="Common\Interfaces\ISleepable.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
+    <Compile Include="Sensors\Gyroscopes\GyroscopeDirections.cs" />
+    <Compile Include="Sensors\Gyroscopes\Gyroscope.cs" />
+    <Compile Include="Sensors\Gyroscopes\Bandwidth.cs" />
     <Compile Include="Sensors\Magnetometers\Compass.cs" />
     <Compile Include="Sensors\Magnetometers\CompassDirections.cs" />
     <Compile Include="Sensors\Magnetometers\Gain.cs" />

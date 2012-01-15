@@ -46,7 +46,7 @@ namespace CopterBot.Visualization
 
             if (text.Length > LineLength)
             {
-                SendCommand(Lcd8BitCommand.CursorToSecondLine);
+                SendCommand(Lcd8BitCommand.CursorToTheSecondLine);
                 SendLine(text.Substring(LineLength));
             }
         }
@@ -61,7 +61,7 @@ namespace CopterBot.Visualization
         public void Print2Line(string text)
         {
             CheckArgument(text);
-            SendCommand(Lcd8BitCommand.CursorToSecondLine);
+            SendCommand(Lcd8BitCommand.CursorToTheSecondLine);
             SendLine(text);
         }
 

@@ -23,14 +23,6 @@ namespace CopterBot.Sensors.Accelerometers
             bus.Dispose();
         }
 
-        public void Init(ScaleRange scale = ScaleRange.G2, Bandwidth bandwidth = Bandwidth.Hz150)
-        {
-            EnableSettingsEditing();
-            SetScaleRange((byte)scale);
-            SetBandwidth((byte)bandwidth);
-            BlockMsbWhileLsbIsRead();
-        }
-
         public void Sleep()
         {
             bus.Update(0x0D, value => (byte)(value | 0x02));
@@ -39,6 +31,26 @@ namespace CopterBot.Sensors.Accelerometers
         public void Wakeup()
         {
             bus.Update(0x0D, value => (byte)(value & 0xFD));
+        }
+
+        public void Init(ScaleRange scale = ScaleRange.G2, Bandwidth bandwidth = Bandwidth.Hz150)
+        {
+            EnableSettingsEditing();
+            SetScaleRange((byte)scale);
+            SetBandwidth((byte)bandwidth);
+            BlockMsbWhileLsbIsRead();
+        }
+
+        public AccelerometerDirections GetDirections()
+        {
+            var bytes = bus.ReadSequence(0x02, 6);
+
+            return new AccelerometerDirections
+                       {
+                           X = Adjust(bytes.TwoLsbFirst()),
+                           Y = Adjust(bytes.TwoLsbFirst(2)),
+                           Z = Adjust(bytes.TwoLsbFirst(4))
+                       };
         }
 
         private void SetBandwidth(byte bandwidth)
@@ -62,18 +74,6 @@ namespace CopterBot.Sensors.Accelerometers
         private void EnableSettingsEditing()
         {
             bus.Update(0x0D, value => (byte)(value | 0x10));
-        }
-
-        public AccelerometerDirections GetDirections()
-        {
-            var bytes = bus.ReadSequence(0x02, 6);
-
-            return new AccelerometerDirections
-                       {
-                           X = Adjust(bytes.TwoLsbFirst()),
-                           Y = Adjust(bytes.TwoLsbFirst(2)),
-                           Z = Adjust(bytes.TwoLsbFirst(4))
-                       };
         }
 
         private float Adjust(Int16 value)
