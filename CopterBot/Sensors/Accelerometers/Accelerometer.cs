@@ -50,11 +50,11 @@ namespace CopterBot.Sensors.Accelerometers
         /// Gets acceleration values in g units (gravitational acceleration ~ 9.8 m/s^2).
         /// Important: When high-pass or band-pass filter is turned on, the sensor doesn't return value for standard acceleration due to free fall.
         /// </summary>
-        public AccelerationData GetValuesByAxes()
+        public AccelerationVector GetVector()
         {
             var bytes = bus.ReadSequence(0x02, 6);
 
-            return new AccelerationData
+            return new AccelerationVector
                        {
                            X = Adjust(bytes.TwoLsbFirst()),
                            Y = Adjust(bytes.TwoLsbFirst(2)),

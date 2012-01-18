@@ -1,8 +1,6 @@
-﻿using System;
-
-namespace CopterBot.Sensors.Accelerometers
+﻿namespace CopterBot.Sensors.Accelerometers
 {
-    public class AccelerationData
+    public class AccelerationVector
     {
         public float X { get; set; }
 

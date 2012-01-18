@@ -35,7 +35,7 @@
   <ItemGroup>
     <Compile Include="Common\Interfaces\II2CBus.cs" />
     <Compile Include="Sensors\Accelerometers\Accelerometer.cs" />
-    <Compile Include="Sensors\Accelerometers\AccelerationData.cs" />
+    <Compile Include="Sensors\Accelerometers\AccelerationVector.cs" />
     <Compile Include="Sensors\Accelerometers\Bandwidth.cs" />
     <Compile Include="Sensors\Accelerometers\ScaleRange.cs" />
     <Compile Include="Sensors\Barometers\Barometer.cs" />
